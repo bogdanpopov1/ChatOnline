@@ -1,6 +1,10 @@
 ﻿@page "/chat"
-<h3>ChatPage</h3>
+@using ChatOnline.Data
+@inherits db_connection
+
+<h3>User: @User.Username</h3>
 
 @code {
-
+    [Parameter]
+    public User User { get; set; } = usersList.Last();
 }

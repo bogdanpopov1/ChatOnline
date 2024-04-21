@@ -1,0 +1,39 @@
+﻿@using ChatOnline.Data
+@inherits db_connection
+
+<footer>
+    <div class="container">
+        <div class="footer-info">
+
+            <h3>CHAT.ONLINE</h3>
+
+                <div class="navbar-buttons">
+                    <button class="btn btn-secondary" @onclick=Registrate>Зарегистрироваться</button>
+                    <button class="btn btn-primary" @onclick=SignIn>Войти</button>
+                </div>
+
+        </div>
+    </div>
+
+    @if (registrationTrigger)
+    {
+        <RegistrationModal></RegistrationModal>
+    }
+    else if (signInTrigger)
+    {
+        <SignInModal></SignInModal>
+    }
+
+</footer>
+
+@code {
+    public void Registrate()
+    {
+        registrationTrigger = true;
+    }
+
+    public void SignIn()
+    {
+        signInTrigger = true;
+    }
+}

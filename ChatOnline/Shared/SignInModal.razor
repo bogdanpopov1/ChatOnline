@@ -5,7 +5,7 @@
 @if (signInTrigger)
 {
     <div class="modal" tabindex="-1" style="display:block">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Вход</h5>
@@ -40,11 +40,9 @@
         foreach (var user in usersList)
         {
             if (user.Username == _newUser.Username && user.Password == _newUser.Password)
-                NavManager.NavigateTo("/chat");
-            else
             {
-                _newUser.Username = "";
-                _newUser.Password = "";
+                NavManager.NavigateTo("/chat");
+                CloseModal();
             }
         }
     }

@@ -15,15 +15,20 @@
                 <a href="#">Вопросы и ответы</a>
             </div>
             <div class="navbar-buttons">
-                <button class="btn btn-outline-secondary" @onclick=Registrate>Зарегестрироваться</button>
+                <button class="btn btn-outline-secondary" @onclick=Registrate>Зарегистрироваться</button>
                 <button class="btn btn-primary" @onclick=SignIn>Войти</button>
             </div>
         </div>
     </div>
 </nav>
 
-<RegistrationModal></RegistrationModal>
-<SignInModal></SignInModal>
+@if (registrationTrigger)
+{
+    <RegistrationModal></RegistrationModal>
+} else if (signInTrigger)
+{
+    <SignInModal></SignInModal>
+}
 
 @code {
     private bool collapseNavMenu = true;
@@ -38,12 +43,10 @@
     public void Registrate()
     {
         registrationTrigger = true;
-        StateHasChanged();
     }
 
     public void SignIn()
     {
         signInTrigger = true;
-        StateHasChanged();
     }
 }
