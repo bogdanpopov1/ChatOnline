@@ -1,0 +1,56 @@
+﻿@using ChatOnline.Data
+@inject NavigationManager NavManager
+@inherits db_connection
+
+@if (signInTrigger)
+{
+    <div class="modal" tabindex="-1" style="display:block">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Вход</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть" @onclick=CloseModal></button>
+                </div>
+                <div class="modal-body">
+                    <div style="display:flex; flex-direction: column; gap: 12px;">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Логин</label>
+                            <input @bind-value="_newUser.Username" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Имя пользователя">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Пароль</label>
+                            <input @bind-value="_newUser.Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Пароль">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick=SignIn>Войти</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick=CloseModal>Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private User _newUser = new User("", "");
+
+    public void SignIn()
+    {
+        foreach (var user in usersList)
+        {
+            if (user.Username == _newUser.Username && user.Password == _newUser.Password)
+                NavManager.NavigateTo("/chat");
+            else
+            {
+                _newUser.Username = "";
+                _newUser.Password = "";
+            }
+        }
+    }
+
+    public void CloseModal()
+    {
+        signInTrigger = false;
+    }
+}

@@ -1,0 +1,51 @@
+﻿@using ChatOnline.Data
+@inject NavigationManager NavManager
+@inherits db_connection
+
+@if (registrationTrigger)
+{
+    <div class="modal" tabindex="-1" style="display:block">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Регистрация</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть" @onclick=CloseModal></button>
+                </div>
+                <div class="modal-body">
+                    <div style="display:flex; flex-direction: column; gap: 12px;">
+                        <div class="form-group">
+                            <label for="exampleInputEmail1">Логин</label>
+                            <input @bind-value="_newUser.Username" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Имя пользователя">
+                            <small id="emailHelp" class="form-text text-muted">Буквы A-Z, цифры 0-9</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Пароль</label>
+                            <input @bind-value="_newUser.Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Пароль">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick=Registrate>Зарегестрироваться</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick=CloseModal>Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private User _newUser = new User("", "");
+
+    public void Registrate()
+    {
+        usersList.Add(_newUser);
+        _newUser = new User("", "");
+        NavManager.NavigateTo("/chat");
+        CloseModal();
+    }
+
+    public void CloseModal()
+    {
+        registrationTrigger = false;
+    }
+}

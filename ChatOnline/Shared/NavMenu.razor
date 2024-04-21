@@ -1,14 +1,30 @@
-﻿<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Chat.Online</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-       @*TODO: nav items*@
+﻿@using ChatOnline.Data
+@inherits db_connection
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <div class="container">
+            <a class="navbar-brand" href="/">CHAT.ONLINE</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <a href="#">Главная</a>
+                <a href="#">О нас</a>
+                <a href="#">Контакты</a>
+                <a href="#">Вопросы и ответы</a>
+            </div>
+            <div class="navbar-buttons">
+                <button class="btn btn-outline-secondary" @onclick=Registrate>Зарегестрироваться</button>
+                <button class="btn btn-primary" @onclick=SignIn>Войти</button>
+            </div>
+        </div>
     </div>
-  </div>
 </nav>
+
+<RegistrationModal></RegistrationModal>
+<SignInModal></SignInModal>
+
 @code {
     private bool collapseNavMenu = true;
 
@@ -17,5 +33,17 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    public void Registrate()
+    {
+        registrationTrigger = true;
+        StateHasChanged();
+    }
+
+    public void SignIn()
+    {
+        signInTrigger = true;
+        StateHasChanged();
     }
 }

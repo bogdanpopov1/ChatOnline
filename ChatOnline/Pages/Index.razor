@@ -1,83 +1,12 @@
 ﻿@page "/"
+@using ChatOnline.Data
 @inject NavigationManager NavManager
+@inherits db_connection
 
 <PageTitle>chat.online</PageTitle>
 
-<div class="card" style="width: 50vw; margin: 1rem auto 0 auto">
-    <div class="card-body" style="display:flex; flex-direction: column; gap: 12px;">
-        <h2 class="card-title">Вход</h2>
-        <div style="display:flex; flex-direction: column; gap: 12px;">
-            <div class="form-group">
-                <label for="exampleInputEmail1">Логин</label>
-                <input @bind-value="_newUser.Username" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Имя пользователя">
-            </div>
-            <div class="form-group">
-                <label for="exampleInputPassword1">Пароль</label>
-                <input @bind-value="_newUser.Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Пароль">
-            </div>
-        </div>
-        <div class="d-flex flex-column">
-            <a @onclick="SignIn" href="#" class="btn btn-primary">Войти</a>
-        </div>
-    </div>
-</div>
 
-<div class="card" style="width: 50vw; margin: 1rem auto 0 auto">
-    <div class="card-body" style="display:flex; flex-direction: column; gap: 12px;">
-        <h2 class="card-title">Регистрация</h2>
-        <div style="display:flex; flex-direction: column; gap: 12px;">
-            <div class="form-group">
-                <label for="exampleInputEmail1">Логин</label>
-                <input @bind-value="_newUser.Username" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Имя пользователя">
-                <small id="emailHelp" class="form-text text-muted">Буквы A-Z, цифры 0-9</small>
-            </div>
-            <div class="form-group">
-                <label for="exampleInputPassword1">Пароль</label>
-                <input @bind-value="_newUser.Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Пароль">
-            </div>
-        </div>
-        <div class="d-flex flex-column">
-            <a @onclick="Registrate" href="#" class="btn btn-primary">Зарегестрироваться</a>
-        </div>
-    </div>
-</div>
 
 @code {
-    private User _newUser = new User("", "");
 
-    public void SignIn()
-    {
-        foreach(var user in usersList)
-        {
-            if (user.Username == _newUser.Username && user.Password == _newUser.Password)
-                NavManager.NavigateTo("/chat");
-            else
-            {
-                _newUser.Username = "";
-                _newUser.Password = "";
-            }
-        }
-    }
-
-    public void Registrate()
-    {
-        usersList.Add(_newUser);
-        _newUser = new User("", "");
-    }
-
-    public class User
-    {
-        public User(string username, string password)
-        {
-            Id = Guid.NewGuid().ToString();
-            Username = username;
-            Password = password;
-        }
-
-        public string Id { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
-    }
-
-    public List<User> usersList { get; set; } = new List<User>();
 }
