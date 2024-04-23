@@ -1,5 +1,4 @@
 ﻿@using ChatOnline.Data
-@inherits db_connection
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
@@ -22,17 +21,18 @@
     </div>
 </nav>
 
-@if (registrationTrigger)
+@if (_registrationTrigger)
 {
-    <RegistrationModal></RegistrationModal>
-} else if (signInTrigger)
+    <RegistrationModal OnClose="CloseRegModal"></RegistrationModal>
+} else if (_signInTrigger)
 {
-    <SignInModal></SignInModal>
+    <SignInModal OnClose="CloseSignInModal"></SignInModal>
 }
 
 @code {
     private bool collapseNavMenu = true;
-
+    private bool _registrationTrigger = false;
+    private bool _signInTrigger = false;
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
@@ -42,11 +42,20 @@
 
     public void Registrate()
     {
-        registrationTrigger = true;
+        _registrationTrigger = true;
     }
 
     public void SignIn()
     {
-        signInTrigger = true;
+        _signInTrigger = true;
+    }
+
+    public void CloseRegModal() {
+        _registrationTrigger = false;
+    }
+
+    public void CloseSignInModal()
+    {
+        _signInTrigger = false;
     }
 }

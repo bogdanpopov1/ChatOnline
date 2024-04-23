@@ -1,5 +1,4 @@
 ﻿@using ChatOnline.Data
-@inherits db_connection
 
 <footer>
     <div class="container">
@@ -15,25 +14,39 @@
         </div>
     </div>
 
-    @if (registrationTrigger)
+    @if (_registrationTrigger)
     {
-        <RegistrationModal></RegistrationModal>
+        <RegistrationModal OnClose="CloseRegModal"></RegistrationModal>
     }
-    else if (signInTrigger)
+    else if (_signInTrigger)
     {
-        <SignInModal></SignInModal>
+        <SignInModal OnClose="CloseSignInModal"></SignInModal>
     }
 
 </footer>
 
+
 @code {
+    private bool _registrationTrigger = false;
+    private bool _signInTrigger = false;
+
     public void Registrate()
     {
-        registrationTrigger = true;
+        _registrationTrigger = true;
     }
 
     public void SignIn()
     {
-        signInTrigger = true;
+        _signInTrigger = true;
+    }
+
+    public void CloseRegModal()
+    {
+        _registrationTrigger = false;
+    }
+
+    public void CloseSignInModal()
+    {
+        _signInTrigger = false;
     }
 }

@@ -1,51 +1,120 @@
 ﻿@using ChatOnline.Data
 @inject NavigationManager NavManager
-@inherits db_connection
+@inject DataContext DataContext
+@inject UserContext UserContext
 
-@if (registrationTrigger)
-{
-    <div class="modal" tabindex="-1" style="display:block">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Регистрация</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть" @onclick=CloseModal></button>
-                </div>
-                <div class="modal-body">
-                    <div style="display:flex; flex-direction: column; gap: 12px;">
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Логин</label>
-                            <input @bind-value="_newUser.Username" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Имя пользователя">
-                            <small id="emailHelp" class="form-text text-muted">Буквы A-Z, цифры 0-9</small>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Пароль</label>
-                            <input @bind-value="_newUser.Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Пароль">
-                        </div>
+
+<div class="modal" tabindex="-1" style="display:block">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Регистрация</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть" @onclick=CloseModal></button>
+            </div>
+            <div class="modal-body">
+                <div style="display:flex; flex-direction: column; gap: 12px;">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Логин</label>
+                        <small id="emailHelp" class="form-text text-danger">@_invalidLoginMsg</small>
+                        <input @bind-value="_newUser.Username" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Имя пользователя">
+                        <small id="emailHelp" class="form-text text-muted">Буквы A-Z, цифры 0-9; минимум 6 символов; минимум 1 буква верхнего регистра, 1 цифра, 1 спецсимвол</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Пароль</label>
+                        <input @bind-value="_newUser.Password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Пароль">
+                        <small id="emailHelp" class="form-text text-danger">@_invalidPasswordMsg</small>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" @onclick=Registrate>Зарегистрироваться</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick=CloseModal>Закрыть</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick=Registrate>Зарегистрироваться</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick=CloseModal>Закрыть</button>
             </div>
         </div>
     </div>
-}
+</div>
+
 
 @code {
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
     private User _newUser = new User("", "");
+    private string _invalidLoginMsg;
+    private string _invalidPasswordMsg;
+
+    private Dictionary<string, List<char>> _symbols = new Dictionary<string, List<char>>() { };
+
+    protected override void OnInitialized()
+    {
+        List<char> letters = new List<char>();
+        List<char> numbers = new List<char>();
+        List<char> special = new List<char>();
+
+        for (var i = 'A'; i <= 'Z'; i++)
+            letters.Add(i);
+        _symbols["letters"] = letters;
+
+        for (var i = '0'; i <= '9'; i++)
+            numbers.Add(i);
+        _symbols["numbers"] = numbers;
+
+        for (var i = '!'; i <= '/'; i++)
+            special.Add(i);
+        for (var i = ':'; i <= '@'; i++)
+            special.Add(i);
+        for (var i = '['; i <= '`'; i++)
+            special.Add(i);
+        for (var i = '{'; i <= '~'; i++)
+            special.Add(i);
+        _symbols["special"] = special;
+    }
 
     public void Registrate()
     {
-        usersList.Add(_newUser);
+        foreach (var user in DataContext.usersList)
+        {
+            if (user.Username == _newUser.Username)
+            {
+                _invalidLoginMsg = "Такой логин уже занят!";
+                return;
+            }
+        }
+
+        bool hasUpperCase = _newUser.Password.Any(c => _symbols["letters"].Contains(c));
+        bool hasNumber = _newUser.Password.Any(c => _symbols["numbers"].Contains(c));
+        bool hasSpecial = _newUser.Password.Any(c => _symbols["special"].Contains(c));
+
+        if (_newUser.Password.Length < 6)
+        {
+            _invalidPasswordMsg = "Пароль должен состоять минимум из 6 символов!";
+            return;
+        }
+        else if (!hasUpperCase)
+        {
+            _invalidPasswordMsg = "Пароль должен содержать минимум 1 букву верхнего регистра!";
+            return;
+        }
+        else if (!hasNumber)
+        {
+            _invalidPasswordMsg = "Пароль должен содержать минимум 1 цифру!";
+            return;
+        }
+        else if (!hasSpecial)
+        {
+            _invalidPasswordMsg = "Пароль должен содержать минимум 1 спецсимвол!";
+            return;
+        }
+
+        DataContext.usersList.Add(_newUser);
+        UserContext.User = _newUser;
         _newUser = new User("", "");
         NavManager.NavigateTo("/chat");
         CloseModal();
     }
 
-    public void CloseModal()
+    private void CloseModal()
     {
-        registrationTrigger = false;
+        OnClose.InvokeAsync();
     }
 }
