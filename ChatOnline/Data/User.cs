@@ -4,12 +4,12 @@
     {
         public User(string username, string password)
         {
-            Id = Guid.NewGuid().ToString();
+            _id = Guid.NewGuid().ToString();
             Username = username;
             Password = password;
         }
 
-        public string Id { get; set; }
+        private string _id;
         public string Username { get; set; }
         public string Password { get; set; }
     }

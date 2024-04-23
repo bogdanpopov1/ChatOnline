@@ -59,10 +59,10 @@
     {
         bool isExisted = false;
 
-        foreach (var user in DataContext.usersList)
+        foreach (var user in DataContext.Users)
         {
-            if (_username == user.Username)
-            {
+            if (_username.ToLower().Trim() == user.Username)
+        {
                 isExisted = true;
                 UserContext.User = user;
             }
@@ -81,7 +81,7 @@
     {
         bool isValid = false;
 
-        if (_password == UserContext.User.Password)
+        if (_password.Trim() == UserContext.User.Password)
             isValid = true;
         else
             _invalidPasswordMsg = "Неверный пароль!";
