@@ -36,7 +36,7 @@ namespace ChatOnline.Data
 
         public void UpdateChats(Chat chat)
         {
-            Chats = Chats.OrderBy(chat => chat.User.Username).ToList();
+            
         }
     }
 }

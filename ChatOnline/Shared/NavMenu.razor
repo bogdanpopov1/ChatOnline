@@ -1,4 +1,6 @@
 ﻿@using ChatOnline.Data
+@inject UserContext UserContext
+@inject NavigationManager NavManager
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
@@ -7,16 +9,25 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <a href="#">Главная</a>
-                <a href="#">О нас</a>
-                <a href="#">Контакты</a>
-                <a href="#">Вопросы и ответы</a>
-            </div>
-            <div class="navbar-buttons">
-                <button class="btn btn-outline-secondary" @onclick=Registrate>Зарегистрироваться</button>
-                <button class="btn btn-primary" @onclick=SignIn>Войти</button>
-            </div>
+            @if (UserContext.User is null)
+            {
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <a href="#">Главная</a>
+                    <a href="#">О нас</a>
+                    <a href="#">Контакты</a>
+                    <a href="#">Вопросы и ответы</a>
+                </div>
+            }
+            @if (UserContext.User is null)
+            {
+                <div class="navbar-buttons">
+                    <button class="btn btn-outline-secondary" @onclick=Registrate>Зарегистрироваться</button>
+                    <button class="btn btn-primary" @onclick=SignIn>Войти</button>
+                </div>
+            } else
+            {
+                <button class="btn btn-primary" @onclick=LogOut>Выйти</button>
+            }
         </div>
     </div>
 </nav>
@@ -48,6 +59,12 @@
     public void SignIn()
     {
         _signInTrigger = true;
+    }
+
+    public void LogOut()
+    {
+        UserContext.User = null;
+        NavManager.NavigateTo("/");
     }
 
     public void CloseRegModal() {

@@ -1,52 +1,14 @@
 ﻿@using ChatOnline.Data
+@inject UserContext UserContext
 
 <footer>
     <div class="container">
         <div class="footer-info">
 
             <h3>CHAT.ONLINE</h3>
-
-                <div class="navbar-buttons">
-                    <button class="btn btn-secondary" @onclick=Registrate>Зарегистрироваться</button>
-                    <button class="btn btn-primary" @onclick=SignIn>Войти</button>
-                </div>
-
+                
         </div>
     </div>
 
-    @if (_registrationTrigger)
-    {
-        <RegistrationModal OnClose="CloseRegModal"></RegistrationModal>
-    }
-    else if (_signInTrigger)
-    {
-        <SignInModal OnClose="CloseSignInModal"></SignInModal>
-    }
-
 </footer>
 
-
-@code {
-    private bool _registrationTrigger = false;
-    private bool _signInTrigger = false;
-
-    public void Registrate()
-    {
-        _registrationTrigger = true;
-    }
-
-    public void SignIn()
-    {
-        _signInTrigger = true;
-    }
-
-    public void CloseRegModal()
-    {
-        _registrationTrigger = false;
-    }
-
-    public void CloseSignInModal()
-    {
-        _signInTrigger = false;
-    }
-}

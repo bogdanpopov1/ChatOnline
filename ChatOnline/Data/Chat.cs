@@ -2,16 +2,19 @@
 {
     public class Chat
     {
-        public Chat(User user, List<Message> messages)
+        public Chat(List<Message> messages)
         {
             _id = Guid.NewGuid().ToString();
-            User = user;
             Messages = messages;
         }
 
         private string _id;
-        public User User { get; set; }
         public List<Message> Messages { get; set; }
+
+        public void SendMessage(Message message)
+        {
+            Messages.Add(message);
+        }
 
         public void UpdateMessages()
         {
