@@ -2,11 +2,12 @@
 {
     public class Message
     {
-        public Message(string text, DateTime dateTime)
+        public Message(string text, User userOwner)
         {
             _id = Guid.NewGuid().ToString();
             Text = text;
-            DateTime = dateTime;
+            DateTime = DateTime.Now;
+            UserOwner = userOwner;
         }
 
         private string _id;

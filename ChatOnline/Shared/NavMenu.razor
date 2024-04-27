@@ -9,7 +9,7 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            @if (UserContext.User is null)
+            @if (UserContext.CurrentUser is null)
             {
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <a href="#">Главная</a>
@@ -18,7 +18,7 @@
                     <a href="#">Вопросы и ответы</a>
                 </div>
             }
-            @if (UserContext.User is null)
+            @if (UserContext.CurrentUser is null)
             {
                 <div class="navbar-buttons">
                     <button class="btn btn-outline-secondary" @onclick=Registrate>Зарегистрироваться</button>
@@ -63,7 +63,7 @@
 
     public void LogOut()
     {
-        UserContext.User = null;
+        UserContext.CurrentUser = null;
         NavManager.NavigateTo("/");
     }
 

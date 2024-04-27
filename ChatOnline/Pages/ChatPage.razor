@@ -1,9 +1,19 @@
 ﻿@page "/chat"
 @using ChatOnline.Data
+@using ChatOnline.Shared
 @inject DataContext DataContext
 @inject UserContext UserContext
 
-<h3>User: @UserContext.User.Username</h3>
+<div class="chat-page">
+    <div>
+        <UsersListComponent></UsersListComponent>
+    </div>
+        
+    <div>
+        <ChatComponent></ChatComponent>
+    </div>
+
+</div>
 
 @code {
     

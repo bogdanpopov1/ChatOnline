@@ -5,6 +5,9 @@ namespace ChatOnline.Data
     public class UserContext
     {
         [Parameter]
-        public static User User { get; set; } = null;
+        public static User CurrentUser { get; set; } = null;
+
+        [Parameter]
+        public static Chat Chat { get; set;}
     }
 }

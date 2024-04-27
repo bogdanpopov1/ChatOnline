@@ -5,7 +5,14 @@ namespace ChatOnline.Data
     public class DataContext
     {
         [Parameter]
-        public static List<User> Users { get; set; } = new List<User>();
+        public static List<User> Users { get; set; } = new List<User>()
+        {
+            new User("bogdan_popov", "A123qweQ!"),
+            new User("bogopas", "A123qweQ!"),
+            new User("diana_best", "A123qweQ!"),
+            new User("diannyyse", "A123qweQ!"),
+            new User("borross17", "A123qweQ!"),
+        };
 
         [Parameter]
         public static List<Chat> Chats { get; set; } = new List<Chat>();

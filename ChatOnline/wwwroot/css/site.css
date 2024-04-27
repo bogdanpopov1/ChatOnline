@@ -110,3 +110,11 @@ footer {
     display: flex;
     justify-content: space-between;
 }
+
+
+.chat-page {
+    display:flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0px;
+}

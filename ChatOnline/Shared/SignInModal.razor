@@ -64,7 +64,7 @@
             if (_username.ToLower().Trim() == user.Username)
         {
                 isExisted = true;
-                UserContext.User = user;
+                UserContext.CurrentUser = user;
             }
 
         }
@@ -81,7 +81,7 @@
     {
         bool isValid = false;
 
-        if (_password.Trim() == UserContext.User.Password)
+        if (_password.Trim() == UserContext.CurrentUser.Password)
             isValid = true;
         else
             _invalidPasswordMsg = "Неверный пароль!";

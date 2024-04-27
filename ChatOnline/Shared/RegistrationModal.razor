@@ -133,7 +133,7 @@
         _newUser.Username = _newUser.Username.ToLower().Trim();
         _newUser.Password = _newUser.Password.Trim();
         DataContext.Users.Add(_newUser);
-        UserContext.User = _newUser;
+        UserContext.CurrentUser = _newUser;
         _newUser = new User("", "");
         NavManager.NavigateTo("/chat");
         CloseModal();

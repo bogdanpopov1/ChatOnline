@@ -1,0 +1,34 @@
+﻿@using ChatOnline.Data
+@inject DataContext DataContext
+@inject UserContext UserContext
+@inject ChatContext ChatContext
+
+<h3>@ChatContext.UserRecipient.Username</h3>
+
+<div style="width: 70%;">
+    <div style="display: flex; margin: 0 4rem; background: gray; height: 100%;">
+        @if (ChatContext.CurrentChat != null)
+        {
+            @foreach (var m in UserContext.CurrentUser.Chat.Messages)
+            {
+                <p>@m.UserOwner.Username</p>
+                <p>@m.Text</p>
+                <p>@m.DateTime</p>
+            }
+        }
+        <input type="text" placeholder="Введите сообщение..." @bind-value="_messageValue" />
+        <button @onclick="SendMessage">Отправить</button>
+    </div>
+</div>
+
+@code {
+    private string _messageValue = "";
+
+    private void SendMessage()
+    {
+        if (ChatContext.CurrentChat == null)
+            return;
+
+        ChatContext.CurrentChat.SendMessage(new Message(_messageValue, UserContext.CurrentUser));
+    }
+}

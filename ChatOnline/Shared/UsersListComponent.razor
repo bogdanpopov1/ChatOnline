@@ -1,0 +1,51 @@
+﻿@using ChatOnline.Data
+@inject DataContext DataContext
+@inject UserContext UserContext
+@inject ChatContext ChatContext
+
+<div class="user-info">
+    <h3>@UserContext.CurrentUser.Username</h3> @*TODO FullName*@
+</div>
+
+<div class="search-chat">
+
+    <input type="search" placeholder="Найти чат..." @bind-value="_searchValue" />
+    <button @onclick=SearchUser>Найти</button>
+
+</div>
+
+@foreach (var user in _users)
+{
+    <p @onclick="() => OpenChat(user)">@user.Username</p>
+}
+
+
+@code {
+    private string _searchValue = "";
+    private List<User> _users = new List<User>();
+
+    private void SearchUser()
+    {
+        var currentList = DataContext.Users;
+        if (!String.IsNullOrEmpty(_searchValue)) {
+            currentList = DataContext.Users.Where(x => x.Username.Contains(_searchValue)).ToList();
+        }
+        _users = currentList;
+        StateHasChanged();
+    }
+
+    private void OpenChat(User user) {
+        var chat = new Chat();
+        DataContext.Chats.Add(chat);
+        UserContext.CurrentUser.Chat = chat;
+        ChatContext.UserRecipient = user;
+
+        foreach(var u in DataContext.Users)
+        {
+            if (u == UserContext.CurrentUser)
+                u.Chat = chat;
+        }
+    }
+
+    
+}

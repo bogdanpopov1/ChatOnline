@@ -2,10 +2,10 @@
 {
     public class Chat
     {
-        public Chat(List<Message> messages)
+        public Chat()
         {
             _id = Guid.NewGuid().ToString();
-            Messages = messages;
+            Messages = new List<Message>();
         }
 
         private string _id;
