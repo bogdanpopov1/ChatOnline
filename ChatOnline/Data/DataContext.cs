@@ -12,6 +12,8 @@ namespace ChatOnline.Data
             new User("diana_best", "A123qweQ!"),
             new User("diannyyse", "A123qweQ!"),
             new User("borross17", "A123qweQ!"),
+            new User("user1", "123"),
+            new User("user2", "123"),
         };
 
         [Parameter]

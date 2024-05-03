@@ -6,6 +6,9 @@ namespace ChatOnline.Data
     {
 
         [Parameter]
-        public static User UserRecipient { get; set;}
+        public static User? UserRecipient { get; set;}
+
+        [Parameter]
+        public static Chat? Chat { get; set; }
     }
 }

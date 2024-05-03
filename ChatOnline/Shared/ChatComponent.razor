@@ -3,32 +3,65 @@
 @inject UserContext UserContext
 @inject ChatContext ChatContext
 
-<h3>@ChatContext.UserRecipient.Username</h3>
+@if (ChatContext.UserRecipient != null)
+{
+    <div class="chat-window">
 
-<div style="width: 70%;">
-    <div style="display: flex; margin: 0 4rem; background: gray; height: 100%;">
-        @if (ChatContext.CurrentChat != null)
-        {
-            @foreach (var m in UserContext.CurrentUser.Chat.Messages)
+        <h3>@ChatContext.UserRecipient.Username</h3>
+
+        <div class="chat-messages">
+            @if (ChatContext.Chat != null)
             {
-                <p>@m.UserOwner.Username</p>
-                <p>@m.Text</p>
-                <p>@m.DateTime</p>
+                @foreach (var m in ChatContext.Chat.Messages)
+                {
+                    <div class="message">
+                        <small id="emailHelp" class="form-text text-warning">@m.UserOwner.Username</small>
+                        <p>@m.Text</p>
+                        <small id="emailHelp" class="form-text">@m.DateTime</small>
+                    </div>
+                }
             }
-        }
-        <input type="text" placeholder="Введите сообщение..." @bind-value="_messageValue" />
-        <button @onclick="SendMessage">Отправить</button>
-    </div>
-</div>
+        </div>
 
+        <div class="send-field">
+            <input type="text" placeholder="Введите сообщение..." @bind-value="_messageValue" class="input-group-text send-input"/>
+            <button @onclick="SendMessage" class="btn btn-primary send-btn">Отправить</button>
+        </div>
+
+    </div>
+
+    <button class="btn-close" @onclick=CloseChat></button>
+}
 @code {
     private string _messageValue = "";
 
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
     private void SendMessage()
     {
-        if (ChatContext.CurrentChat == null)
-            return;
+        if (_messageValue != "" && _messageValue != null && _messageValue != string.Empty)
+            ChatContext.Chat.Messages.Add(new Message(_messageValue, UserContext.CurrentUser));
 
-        ChatContext.CurrentChat.SendMessage(new Message(_messageValue, UserContext.CurrentUser));
+        _messageValue = "";
+    }
+
+    private void CloseChat()
+    {
+        if (UserContext.CurrentUser.Chats.Any(c => c.UserSender == ChatContext.UserRecipient))
+        {
+            UserContext.CurrentUser.Chats.Remove(new Chat(ChatContext.UserRecipient));
+            UserContext.CurrentUser.Chats.Add(ChatContext.Chat);
+        }
+
+        if (ChatContext.UserRecipient.Chats.Any(c => c.UserSender == UserContext.CurrentUser))
+        {
+            ChatContext.UserRecipient.Chats.Remove(new Chat(UserContext.CurrentUser));
+            ChatContext.UserRecipient.Chats.Add(ChatContext.Chat);
+        }
+
+        ChatContext.UserRecipient = null;
+        ChatContext.Chat = null;
+        OnClose.InvokeAsync();
     }
 }

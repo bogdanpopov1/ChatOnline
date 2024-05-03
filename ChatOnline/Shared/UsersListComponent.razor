@@ -3,49 +3,74 @@
 @inject UserContext UserContext
 @inject ChatContext ChatContext
 
-<div class="user-info">
-    <h3>@UserContext.CurrentUser.Username</h3> @*TODO FullName*@
+<div class="search-window">
+
+    <div class="user-info">
+        <h3>@UserContext.CurrentUser.Username</h3> @*TODO FullName*@
+    </div>
+
+    <div class="search-field">
+        <input type="search" placeholder="Найти чат..." @bind-value="_searchValue" class="form-control" @oninput="SearchUser" />
+    </div>
+
+    @if (listIsOpened)
+    {
+        @foreach (var user in _users)
+        {
+            @if(user.Username != UserContext.CurrentUser.Username)
+            {
+                <button @onclick="() => OpenChat(user)" class="user-list-button">@user.Username</button>
+            }
+        }
+    }
+
 </div>
-
-<div class="search-chat">
-
-    <input type="search" placeholder="Найти чат..." @bind-value="_searchValue" />
-    <button @onclick=SearchUser>Найти</button>
-
-</div>
-
-@foreach (var user in _users)
-{
-    <p @onclick="() => OpenChat(user)">@user.Username</p>
-}
 
 
 @code {
     private string _searchValue = "";
+    private bool listIsOpened = false;
     private List<User> _users = new List<User>();
 
-    private void SearchUser()
+    [Parameter]
+    public EventCallback OnOpen { get; set; }
+
+    private void SearchUser(ChangeEventArgs e)
     {
         var currentList = DataContext.Users;
-        if (!String.IsNullOrEmpty(_searchValue)) {
-            currentList = DataContext.Users.Where(x => x.Username.Contains(_searchValue)).ToList();
+        if (!String.IsNullOrEmpty(e.Value.ToString()))
+        {
+            currentList = DataContext.Users.Where(x => x.Username.Contains(e.Value.ToString())).ToList();
+            _users = currentList;
+            listIsOpened = true;
+        } else
+        {
+            listIsOpened = false;
         }
-        _users = currentList;
+        
         StateHasChanged();
     }
 
-    private void OpenChat(User user) {
-        var chat = new Chat();
-        DataContext.Chats.Add(chat);
-        UserContext.CurrentUser.Chat = chat;
+    private void OpenChat(User user)
+    {
+        _searchValue = "";
+        listIsOpened = false;
         ChatContext.UserRecipient = user;
 
-        foreach(var u in DataContext.Users)
+        if (!UserContext.CurrentUser.Chats.Any(c => c.UserSender == ChatContext.UserRecipient))
         {
-            if (u == UserContext.CurrentUser)
-                u.Chat = chat;
+            UserContext.CurrentUser.Chats.Add(new Chat(ChatContext.UserRecipient));
+            ChatContext.UserRecipient.Chats.Add(new Chat(UserContext.CurrentUser));
         }
-    }
 
-    
+        foreach (var chat in UserContext.CurrentUser.Chats)
+        {
+            if (chat.UserSender == ChatContext.UserRecipient)
+                ChatContext.Chat = chat;
+        }
+
+        OnOpen.InvokeAsync();
+
+
+    }
 }

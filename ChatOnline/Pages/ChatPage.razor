@@ -4,17 +4,34 @@
 @inject DataContext DataContext
 @inject UserContext UserContext
 
-<div class="chat-page">
-    <div>
-        <UsersListComponent></UsersListComponent>
-    </div>
-        
-    <div>
-        <ChatComponent></ChatComponent>
-    </div>
 
-</div>
+    @if (!chatIsOpened)
+    {
+        <div>
+            <UsersListComponent OnOpen="OpenChat"></UsersListComponent>
+        </div>
+    }
+    
+    @if (chatIsOpened)
+    {
+        <div>
+            <ChatComponent OnClose="CloseChat"></ChatComponent>
+        </div>
+    }
+    
+
+
 
 @code {
-    
+    private bool chatIsOpened = false;
+
+    private void OpenChat()
+    {
+        chatIsOpened = true;
+    }
+
+    private void CloseChat()
+    {
+        chatIsOpened = false;
+    }
 }
