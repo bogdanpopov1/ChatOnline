@@ -39,7 +39,7 @@
         </div>
 
         <div class="send-field">
-            <input type="text" placeholder="Введите сообщение..." @bind-value="_messageValue" class="input-group-text send-input" />
+            <input type="text" placeholder="Введите сообщение..." @bind-value="_messageValue" @onkeyup="SendMessageByEnter" class="input-group-text send-input" />
             <button @onclick="SendMessage" class="btn btn-primary send-btn">Отправить</button>
         </div>
 
@@ -57,6 +57,14 @@
     private void SendMessage()
     {
         if (_messageValue != "" && _messageValue != null && _messageValue != string.Empty)
+            ChatContext.Chat.Messages.Add(new Message(_messageValue, UserContext.CurrentUser));
+
+        _messageValue = "";
+    }
+
+    private void SendMessageByEnter(KeyboardEventArgs k)
+    {
+        if (k.Key == "Enter" && _messageValue != "" && _messageValue != null && _messageValue != string.Empty)
             ChatContext.Chat.Messages.Add(new Message(_messageValue, UserContext.CurrentUser));
 
         _messageValue = "";
