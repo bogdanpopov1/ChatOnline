@@ -79,6 +79,9 @@
 
     public void Registrate()
     {
+        if (string.IsNullOrEmpty(_newUser.Username))
+            return;
+
         foreach (var user in DataContext.Users)
         {
             if (user.Username == _newUser.Username.Trim())

@@ -44,6 +44,9 @@
 
     public void SignIn()
     {
+        if (string.IsNullOrEmpty(_username) || string.IsNullOrEmpty(_password))
+            return;
+
         if (!CheckLogin())
             return;
 
