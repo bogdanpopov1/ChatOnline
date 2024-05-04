@@ -3,35 +3,51 @@
 @inject UserContext UserContext
 @inject ChatContext ChatContext
 
-@if (ChatContext.UserRecipient != null)
-{
+<div class="container">
+
     <div class="chat-window">
 
-        <h3>@ChatContext.UserRecipient.Username</h3>
+        <div class="user-info">
+            <h3><img src="@ChatContext.UserRecipient.Image" class="user-image" alt="image" /> @ChatContext.UserRecipient.Username</h3>
+            <button class="btn-close" @onclick=CloseChat></button>
+        </div>
 
         <div class="chat-messages">
             @if (ChatContext.Chat != null)
             {
                 @foreach (var m in ChatContext.Chat.Messages)
                 {
-                    <div class="message">
-                        <small id="emailHelp" class="form-text text-warning">@m.UserOwner.Username</small>
-                        <p>@m.Text</p>
-                        <small id="emailHelp" class="form-text">@m.DateTime</small>
-                    </div>
+                    @if (m.UserOwner == UserContext.CurrentUser)
+                    {
+                        <div class="message message-current-user">
+                            <small id="emailHelp" class="form-text text-warning">@m.UserOwner.Username</small>
+                            <p>@m.Text</p>
+                            <small id="emailHelp" class="form-text text-info">@m.DateTime</small>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="message message-recipient-user">
+                            <small id="emailHelp" class="form-text text-primary">@m.UserOwner.Username</small>
+                            <p>@m.Text</p>
+                            <small id="emailHelp" class="form-text text-muted">@m.DateTime</small>
+                        </div>
+                    }
+
                 }
             }
         </div>
 
         <div class="send-field">
-            <input type="text" placeholder="Введите сообщение..." @bind-value="_messageValue" class="input-group-text send-input"/>
+            <input type="text" placeholder="Введите сообщение..." @bind-value="_messageValue" class="input-group-text send-input" />
             <button @onclick="SendMessage" class="btn btn-primary send-btn">Отправить</button>
         </div>
 
     </div>
 
-    <button class="btn-close" @onclick=CloseChat></button>
-}
+</div>
+
+
 @code {
     private string _messageValue = "";
 
@@ -48,20 +64,33 @@
 
     private void CloseChat()
     {
-        if (UserContext.CurrentUser.Chats.Any(c => c.UserSender == ChatContext.UserRecipient))
-        {
-            UserContext.CurrentUser.Chats.Remove(new Chat(ChatContext.UserRecipient));
-            UserContext.CurrentUser.Chats.Add(ChatContext.Chat);
-        }
-
-        if (ChatContext.UserRecipient.Chats.Any(c => c.UserSender == UserContext.CurrentUser))
-        {
-            ChatContext.UserRecipient.Chats.Remove(new Chat(UserContext.CurrentUser));
-            ChatContext.UserRecipient.Chats.Add(ChatContext.Chat);
-        }
-
+        UpdateChat();
         ChatContext.UserRecipient = null;
         ChatContext.Chat = null;
         OnClose.InvokeAsync();
+    }
+
+    protected override void OnParametersSet()
+    {
+        UpdateChat();
+    }
+
+    private void UpdateChat()
+    {
+        foreach (var c in UserContext.CurrentUser.Chats)
+        {
+            if (c.UserSender == ChatContext.UserRecipient)
+            {
+                c.Messages = ChatContext.Chat.Messages;
+            }
+        }
+
+        foreach (var c in ChatContext.UserRecipient.Chats)
+        {
+            if (c.UserSender == UserContext.CurrentUser)
+            {
+                c.Messages = ChatContext.Chat.Messages;
+            }
+        }
     }
 }

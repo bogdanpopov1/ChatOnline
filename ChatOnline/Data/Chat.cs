@@ -5,7 +5,6 @@
         public Chat(User userSender)
         {
             _id = Guid.NewGuid().ToString();
-            Messages = new List<Message>();
             UserSender = userSender;
         }
 

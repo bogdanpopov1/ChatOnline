@@ -3,33 +3,65 @@
 @inject UserContext UserContext
 @inject ChatContext ChatContext
 
-<div class="search-window">
+<div class="container">
 
-    <div class="user-info">
-        <h3>@UserContext.CurrentUser.Username</h3> @*TODO FullName*@
+
+    <div class="search-window">
+
+        <div class="search-main">
+
+            <div class="user-info">
+                <h3><img src="@UserContext.CurrentUser.Image" class="user-image" alt="image"/> @UserContext.CurrentUser.Username</h3> @*TODO FullName*@
+            </div>
+
+            <div class="search-field">
+                <input type="search" placeholder="Найти чат..." @bind-value="_searchValue" class="form-control" @oninput="SearchUser" />
+            </div>
+
+            <div class="users-list">
+
+                @if (listIsOpened)
+                {
+                    @foreach (var user in _users)
+                    {
+                        @if (user.Username != UserContext.CurrentUser.Username)
+                        {
+                            <button @onclick="() => OpenChat(user)" class="user-list-button"><img src="@user.Image" class="user-image users-list-image" alt="image" /> @user.Username</button>
+
+                        }
+                    }
+                }
+
+                @if (_users.Count == 0 && !isFirstSearch)
+                {
+                    <div class="not-users-msg">
+                        <h5>Пользователи не найдены.</h5>
+                    </div>
+                }
+
+            </div>
+
+
+        </div>
+
+        <div class="search-banner">
+
+            <h4>
+                <span class="chat-logo"></span>
+                Chat.Online
+            </h4>
+
+            <p>Добро пожаловать, @UserContext.CurrentUser.Username! Приятного общения!</p>
+
+        </div>
+
     </div>
-
-    <div class="search-field">
-        <input type="search" placeholder="Найти чат..." @bind-value="_searchValue" class="form-control" @oninput="SearchUser" />
-    </div>
-
-    @if (listIsOpened)
-    {
-        @foreach (var user in _users)
-        {
-            @if(user.Username != UserContext.CurrentUser.Username)
-            {
-                <button @onclick="() => OpenChat(user)" class="user-list-button">@user.Username</button>
-            }
-        }
-    }
 
 </div>
-
-
 @code {
     private string _searchValue = "";
     private bool listIsOpened = false;
+    private bool isFirstSearch = true;
     private List<User> _users = new List<User>();
 
     [Parameter]
@@ -43,11 +75,12 @@
             currentList = DataContext.Users.Where(x => x.Username.Contains(e.Value.ToString())).ToList();
             _users = currentList;
             listIsOpened = true;
-        } else
+        }
+        else
         {
             listIsOpened = false;
         }
-        
+        isFirstSearch = false;
         StateHasChanged();
     }
 
