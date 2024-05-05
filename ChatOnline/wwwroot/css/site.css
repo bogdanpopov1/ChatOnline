@@ -108,15 +108,15 @@ h2, h3 {
 footer {
     position: absolute;
     bottom: 0;
-    top: auto;
     width: 100%;
-    height: 150px;
+    height: 8vh;
     background-color: navy;
-    padding: 30px 0;
+    padding: 2vh 0;
 }
 
     footer h3 {
         color: white;
+        font-size: 2vh;
     }
 
 .footer-info {
@@ -132,11 +132,11 @@ footer {
 }
 
 .search-window {
-    height: 85vh;
+    height: 87vh;
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 20px 0;
+    padding: 20px 0 0;
 }
 
 .user-info h3 {
@@ -225,18 +225,10 @@ footer {
     }
 
 
-
-.chat-page {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
 .chat-window {
-    max-height: 82vh;
+    justify-content: space-between;
     width: 100%;
+    height: 85vh;
     display: flex;
     flex-direction: column;
     margin: 20px auto;
@@ -245,8 +237,8 @@ footer {
 .chat-messages {
     display: flex;
     flex-direction: column;
+    height: 85%;
     gap: 12px;
-    height: 100vw;
     overflow-y: auto;
     margin: 20px 0 30px;
     scroll-behavior: smooth;
